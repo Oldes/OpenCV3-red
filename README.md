@@ -45,6 +45,8 @@ libs/calib3d/calib3D.reds		 ; for using different cameras
 
 libs/highgui/highgui.reds       ; highgui functions
 
+libs/imgproc/types_c.reds       ; image processing types and structures
+
 libs/imgcodecs/imgcodecs.reds   ; basic image functions
 
 libs/imgproc/imgproc.reds		 ; image processing functions
