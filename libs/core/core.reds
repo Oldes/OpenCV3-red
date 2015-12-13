@@ -18,7 +18,7 @@ Red/System [
 #switch OS [
     MacOSX  [#define core "/usr/local/lib32/opencv3/libopencv_world.3.0.0.dylib" #define importMode cdecl]
     Windows [#define core "c:\opencv3\build\x86\vc12\bin\opencv_world300.dll" #define importMode cdecl] ;stdcall in case of
-    Linux   [#define core "/usr/local/lib32/opencv3/libopencv_world.3.0.0.so" #define importMode cdecl]
+    Linux   [#define core "/usr/local/lib32/opencv3/libopencv_world.so.3.0.0" #define importMode cdecl]
 ]
 
 CV_AUTOSTEP:             7FFFFFFFh

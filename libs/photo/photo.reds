@@ -11,13 +11,14 @@ Red/System [
 #include %../../libs/imgproc/types_c.reds       ; image processing types and structuresñ
 
 
-;#define photo "/usr/local/lib32/opencv3/libopencv_photo.dylib"
+#define tphoto "libopencv_photo.dylib"
+print [tphoto newline]
 
 ; OpenCV photo C Functions
 #switch OS [
     MacOSX  [#define photo "/usr/local/lib32/opencv3/libopencv_world.3.0.0.dylib" #define importMode cdecl]
     Windows [#define photo "c:\opencv3\build\x86\vc12\bin\opencv_world300.dll" #define importMode cdecl] ;stdcall in case of
-    Linux   [#define photo "/usr/local/lib32/opencv3/libopencv_world.3.0.0.so" #define importMode cdecl]
+    Linux   [#define photo "/usr/local/lib32/opencv3/libopencv_world.so.3.0.0" #define importMode cdecl]
 ]
 
 #enum InpaintingModes [
@@ -37,3 +38,4 @@ Red/System [
         ]
     ]; end photo
 ] ;end import
+

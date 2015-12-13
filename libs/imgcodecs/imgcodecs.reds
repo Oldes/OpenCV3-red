@@ -16,7 +16,7 @@ Red/System [
 #switch OS [
     MacOSX  [#define imgcodecs "/usr/local/lib32/opencv3/libopencv_world.3.0.0.dylib" #define importMode cdecl]
     Windows [#define imgcodecs "c:\opencv3\build\x86\vc12\bin\opencv_world300.dll" #define importMode cdecl] ;stdcall in case of
-    Linux   [#define imgcodecs "/usr/local/lib32/opencv3/libopencv_world.3.0.0.so" #define importMode cdecl]
+    Linux   [#define imgcodecs "/usr/local/lib32/opencv3/libopencv_world.so.3.0.0" #define importMode cdecl]
 ]
 
 
