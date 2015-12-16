@@ -219,7 +219,7 @@ CvTreeNodeIterator!: alias struct! [
         cvGetImageCOI: "cvGetImageCOI" [
         "Retrieves image Channel Of Interest"
             image		[IplImage!]
-            return: 	        [integer!] 
+            return: 	[integer!] 
         ]
         
         cvSetImageROI: "cvSetImageROI" [
@@ -462,7 +462,8 @@ CvTreeNodeIterator!: alias struct! [
         cvGet1D: "cvGet1D" [
             arr		        [CvArr!]
             idx0		[integer!]
-            return:		[CvScalar!] ; not a pointer	          
+            ;return:		[CvScalar!] ; not a pointer
+			return:		[byte-ptr!]
         ]
         cvGet2D: "cvGet2D" [
             arr		        [CvArr!]
@@ -486,8 +487,8 @@ CvTreeNodeIterator!: alias struct! [
         ;for 1-channel arrays
         cvGetReal1D: "cvGetReal1D" [
             arr		        [CvArr!]
-            idx0		[integer!]
-            return:             [float!]
+            idx0			[integer!]
+            return:         [float!]
         ]
         
         cvGetReal2D: "cvGetReal2D" [
@@ -649,8 +650,9 @@ CvTreeNodeIterator!: alias struct! [
         cvGetSize: "cvGetSize" [
         "Returns width and height of array in elements"
             arr		        [CvArr!]
-            return:             [CvSize!] ; not a pointer
+            return:         [CvSize!] ; not a pointer
         ]
+        
         
          cvCopy: "cvCopy" [
         "Copies source array to destination array"
@@ -1999,8 +2001,42 @@ tocvRGB: func [vr [float!] vg [float!] vb [float!] va  [float!] return: [CvScala
   val: vb / 255.0 either val > 0.5 [r: val * 127.0] [r: -1.0 * (val * 128.0)]
   if va = 0.0 [a: 0.0]
   if va <> 0.0 [val: va / 255.0 either val > 0.5 [a: val * 127.0] [a: -1.0 * (val * 128.0)]]
-   
   cvScalar b g r a
-]       
+]
+; a shortcut for image release
+releaseImage: func [image [byte-ptr!]] [
+	&image: declare double-byte-ptr!;  C function needs a double pointer
+	&image/ptr: image
+	cvReleaseImage &image
+]
         
-        
+   
+; temporary functions waiting for struct improvments
+; e.g. cvGetSize
+; WARNING ONLY FOR target = 'IA32
+getSizeW: func [arr [CvArr!] return: [integer!]][
+	cvGetSize arr
+	system/cpu/eax
+]
+
+getSizeH: func [arr [CvArr!] return: [integer!]][
+	cvGetSize arr
+	system/cpu/edx
+]
+
+getSize: func [arr [CvArr!] return: [CvSize!]][
+	sz: declare CvSize!
+        cvGetSize arr
+	sz/width: system/cpu/eax
+	cvGetSize arr
+	sz/height: system/cpu/edx
+	sz
+]
+   
+   
+;idem for scalar!
+get1D: func [arr [CvArr!] idx0 [integer!] return: [integer!]][
+	cvGet1D arr idx0
+	system/cpu/eax
+]
+ 

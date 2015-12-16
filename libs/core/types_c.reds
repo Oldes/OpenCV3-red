@@ -187,7 +187,8 @@ CV_IS_IMAGE: func [img [IplImage!] return: [logic!]] [not none? img]
 IPL_DEPTH_64F:               64 ; ;/* for storing double-precision floating point data in IplImage's */
 
 ; elemtype 0: integers 1: floats
-CV_IMAGE_ELEM: func [image [IplImage!] elemtype [integer!] row [integer!] col [integer!] return: [float!]] [
+CV_IMAGE_ELEM: func [image [IplImage!] elemtype [integer!] row [integer!] col [integer!] return: [float!]
+/local pixeli pixelf] [
     pixeli: as int-ptr! image/*imageData + (image/widthStep * row * col)
     pixelf: as float-ptr! image/*imageData + (image/widthStep * row * col)
     either elemtype = 0 [1.0 * pixeli/1] [1.0 * pixelf/1]   
@@ -324,22 +325,27 @@ type, and it checks for the row and column ranges only in debug mode.
 @param row The zero-based index of row
 @param col The zero-based index of column}
 
+
 cvmGet: func [
 "Return the particular element of single-channel floating-point matrix"
 		mat 	[cvMat!]
 		row 	[integer!]
 		col 	[integer!]
 		return: [float!]
-		/local index type ]
-		[
-                type: mat/type AND CV_MAT_TYPE_MASK
-		assert row < mat/rows
+		/local offset type data val]
+		[	    type: mat/type AND CV_MAT_TYPE_MASK
+				assert row < mat/rows
                 assert col < mat/cols
-                if type = (CV_32FC1 or CV_64FC1) [
-                index: (mat/cols * mat/step * row  + col) - mat/cols; index of element REVOIR
-                mat/data: mat/data + index ] ; move pointer to 
-                either mat/data <> null [mat/data/value] [0.0]; get value
-                0.0
+                data: mat/data ; get base address
+                val: 0.0
+                if type = (CV_64FC1) or (type = CV_32FC1) [
+                	offset: (mat/step * row)  + (col * 1)
+                	mat/data: mat/data + offset 
+                	either mat/data <> null [val: mat/data/value] [val: -1.0]; get value
+                ]  
+                
+                ;mat/data: data ;
+                val
 ]
 
 {The function is a fast replacement for cvSetReal2D in the case of single-channel floating-point
@@ -356,16 +362,18 @@ cvmSet: func [
     row 	[integer!]
     col 	[integer!]
     value 	[float!]
-    /local type index][
+    /local type offset data][
     
     type: CV_MAT_TYPE mat/type
     assert row < mat/rows
     assert col < mat/cols
-    offset: (size_t * row)  + (col * size_t) + (size_t * row) ; OK for offset
-    if type = (CV_32FC1 or CV_64FC1) [
+    data: mat/data ; get base address
+	offset: (mat/step * row)  + (col * 1)  ; OK for offset
+    if type = (CV_64FC1) or (type = CV_32FC1)  [
         mat/data: mat/data + offset  ; move pointer to
         mat/data/value: value ; set the value
     ]
+    mat/data: data ; 
 ]
 
 cvCvToIplDepth: func [
