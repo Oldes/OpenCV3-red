@@ -1995,7 +1995,7 @@ cvMatMul: func [src1 [CvArr!] src2 [CvArr!] dst [CvArr!]] [
 ;ATTENTION in OpenCV BGRA values are bit: -128 .. 127 0..255 in OpenCV for 32-bit images
 ; we use a func to transform r fg b a 0..255 to use with red/system
 
-tocvRGB: func [vr [float!] vg [float!] vb [float!] va  [float!] return: [CvScalar!]/local r g b a]
+tocvRGB: func [vr [float!] vg [float!] vb [float!] va  [float!] return: [CvScalar!]/local r g b a val]
 [ val: vr / 255.0 either val > 0.5 [b: val * 127.0] [b: -1.0 * (val * 128.0)]
   val: vg / 255.0 either val > 0.5 [g: val * 127.0] [g: -1.0 * (val * 128.0)]
   val: vb / 255.0 either val > 0.5 [r: val * 127.0] [r: -1.0 * (val * 128.0)]
@@ -2004,7 +2004,7 @@ tocvRGB: func [vr [float!] vg [float!] vb [float!] va  [float!] return: [CvScala
   cvScalar b g r a
 ]
 ; a shortcut for image release
-releaseImage: func [image [byte-ptr!]] [
+releaseImage: func [image [byte-ptr!] /local &image] [
 	&image: declare double-byte-ptr!;  C function needs a double pointer
 	&image/ptr: image
 	cvReleaseImage &image
@@ -2024,7 +2024,7 @@ getSizeH: func [arr [CvArr!] return: [integer!]][
 	system/cpu/edx
 ]
 
-getSize: func [arr [CvArr!] return: [CvSize!]][
+getSize: func [arr [CvArr!] return: [CvSize!] /local sz][
 	sz: declare CvSize!
         cvGetSize arr
 	sz/width: system/cpu/eax

@@ -348,7 +348,7 @@ CvChainPtReader!: alias struct! [
 ]
 
 ;initializes 8-element array for fast access to 3x3 neighborhood of a pixel
-CV_INIT_3X3_DELTAS: func [step [integer!] nch [integer!] return: [int-ptr!] /local deltas][
+CV_INIT_3X3_DELTAS: func [step [integer!] nch [integer!] return: [int-ptr!] /local deltas arraySize mem][
         arraySize: 8 * size? integer!
         mem: allocate arraySize
 	deltas: as pointer! [integer!] mem

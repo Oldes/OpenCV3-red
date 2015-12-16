@@ -18,16 +18,22 @@ Red [
 		MacOSX  [picture: "/Users/fjouen/Pictures/lena.tiff"]
 		Windows [picture: "c:\Users\palm\Pictures\lena.tiff"]
 	]
+	
+	;global variables
+	
 	delay: 1000
 	wName1: "Image 1 "
 	wName2: "Image 1 Clone "
 	wName3: "Result"
+	src: declare CvArr!
+	clone: declare CvArr!
+	sum: declare CvArr!
 	
 ]
 
 ; playing with some basic operators 
 
-loadImages: routine [] [
+loadImages: routine [/local tmp] [
 	tmp: cvLoadImage picture CV_LOAD_IMAGE_ANYCOLOR ; to get structure values
 	clone: as byte-ptr! cvCreateImage tmp/width tmp/height tmp/depth tmp/nChannels 
 	sum:  as byte-ptr! cvCreateImage tmp/width tmp/height tmp/depth tmp/nChannels
@@ -61,7 +67,7 @@ subImages: routine [][
 	cvWaitKey delay
 ]
 
-addScalar: routine [][
+addScalar: routine [/local v][
 	print ["cvAddS" lf]
 	v: cvScalar 255.0 0.0 0.0 0.0
 	cvAddS src v/v0 v/v1 v/v2 v/v3 sum null
@@ -70,7 +76,7 @@ addScalar: routine [][
 ]
 
 
-subScalar: routine [][
+subScalar: routine [/local v][
 	print ["cvSubS" lf]
 	v: cvScalar 255.0 255.0 0.0 0.0
 	cvSubS src v/v0 v/v1 v/v2 v/v3 sum null
@@ -78,7 +84,7 @@ subScalar: routine [][
 	cvWaitKey delay
 ]
 
-subRScalar: routine [][
+subRScalar: routine [/local v][
 	print ["cvSubRS" lf]
 	v: cvScalar 255.0 0.0 0.0 0.0
 	cvSubRS src v/v0 v/v1 v/v2 v/v3 sum null
@@ -129,7 +135,7 @@ andOperator: routine [] [
 	cvWaitKey delay
 ]
 
-andSOperator: routine [] [
+andSOperator: routine [/local v] [
 	print ["cvAndS" lf]
 	v: cvScalar 127.0 127.0 127.0 0.0
 	cvAndS clone  v/v0 v/v1 v/v2 v/v3 sum null
@@ -144,7 +150,7 @@ orOperator: routine [] [
 	cvWaitKey delay
 ]
 
-orSOperator: routine [] [
+orSOperator: routine [/local v] [
 	print ["cvOrS" lf]
 	v: cvScalar 0.0 255.0 0.0 0.0
 	cvOrS clone v/v0 v/v1 v/v2 v/v3 sum null
@@ -159,7 +165,7 @@ xorOperator: routine [] [
 	cvWaitKey delay
 ]
 
-xorSOperator: routine [] [
+xorSOperator: routine [/local v] [
 	print ["cvXorS" lf]
 	v: cvScalar 0.0 255.0 0.0 0.0
 	cvXorS clone v/v0 v/v1 v/v2 v/v3 sum null
@@ -188,15 +194,9 @@ dotProduct: routine [][
 
 freeOpenCV: routine [] [
 	cvDestroyAllWindows
-	&src: declare dbptr! ; we need a double pointer
-	&src/ptr: src
-	cvReleaseImage &src
-	&clone: declare dbptr! ; we need a double pointer
-	&clone/ptr: clone
-	cvReleaseImage &clone
-	&sum: declare dbptr! ; we need a double pointer
-	&sum/ptr: sum
-	cvReleaseImage &sum
+	releaseImage src
+	releaseImage clone
+	releaseImage sum
 ]
 
 

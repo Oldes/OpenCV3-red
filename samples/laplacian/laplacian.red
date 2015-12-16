@@ -21,36 +21,36 @@ Red [
 		Windows [image: "c:\Users\palm\Pictures\baboon.jpg"]
 	]
 	depth: IPL_DEPTH_32F
+	kernel: 11 ; up to 31 but always ODD !!!
+	srcWnd: "Source"
+	dstWnd: "Laplacian"
+	src: declare CvArr!
+	dst: declare CvArr!
 ]
 
 
-laplacian: routine [] [
-	srcWnd: "Source"
-	dstWnd: "Laplacian"
-	kernel: 11 ; up to 31 but always ODD !!!
-	src: cvLoadImage image CV_LOAD_IMAGE_ANYCOLOR
-	dst: cvCreateImage src/width src/height depth 3
+laplacian: routine [/local tmp] [
+	tmp: cvLoadImage image CV_LOAD_IMAGE_ANYCOLOR
+	dst: as byte-ptr! cvCreateImage tmp/width tmp/height IPL_DEPTH_32F 3
+	src: as byte-ptr! tmp
+	tmp: null
 	cvNamedWindow srcWnd CV_WINDOW_AUTOSIZE 
 	cvNamedWindow dstWnd CV_WINDOW_AUTOSIZE
 	cvMoveWindow dstWnd 620 100
-	cvLaplace as byte-ptr! src  as byte-ptr! dst kernel 
-	cvShowImage srcWnd as byte-ptr! src
-	cvShowImage dstWnd as byte-ptr! dst
+	cvLaplace src dst kernel 
+	cvShowImage srcWnd src
+	cvShowImage dstWnd dst
 	cvWaitKey 0 ; until a key is pressed
 ]
 
 ; free memory used by OpenCV
 freeOpenCV: routine [] [
 	cvDestroyAllWindows
-	&src: declare dbptr! ; we need a double pointer
-	&src/ptr: as byte-ptr! src
-	cvReleaseImage &src
-	&dst: declare dbptr! ; we need a double pointer
-	&dst/ptr: as byte-ptr! dst
-	cvReleaseImage &dst
+	releaseImage src
+	releaseImage dst
 ]
 
-
+;*********************************** Mein program ***********************
 laplacian
 freeOpenCV
 quit

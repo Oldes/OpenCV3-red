@@ -13,13 +13,17 @@ Red [
 	#include %../../libs/imgcodecs/imgcodecs.reds   ; basic image functions
 	#include %../../libs/core/core.reds             ; OpenCV core functions
 
+	
 	; according to OS 
 	#switch OS [
 		MacOSX  [picture: "/Users/fjouen/Pictures/baboon.jpg"]
 		Windows [picture: "c:\Users\palm\Pictures\baboon.jpg"]
 	]
+	; global variables
+	
 	delay: 1000
 	wName: "Flip Image"
+	img: declare CvArr!
 	
 ]
 
@@ -50,9 +54,7 @@ flipImage: routine [][
 
 freeOpenCV: routine [] [
 	cvDestroyAllWindows
-	&img: declare dbptr! ; we need a double pointer
-	&img/ptr: img
-	cvReleaseImage &img	
+	releaseImage img	
 ]
 
 

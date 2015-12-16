@@ -284,7 +284,7 @@ use together with cvCreateData, or use cvCreateMat instead to get a matrix with 
 	cols            [integer!]
 	type            [integer!]
 	data            [float-ptr!]
-	return:         [cvMat!]]
+	return:         [cvMat!] /local m]
 	[m: declare cvMat!
 	assert (m/type and  CV_MAT_DEPTH_MASK) <= CV_64F
 	m/type: CV_MAT_MAGIC_VAL OR CV_MAT_CONT_FLAG OR type
@@ -313,7 +313,7 @@ CV_MAT_ELEM_PTR: func [mat [cvMat!] row [integer!] col [integer!] return: [integ
 ]
 
 CV_MAT_ELEM: func [mat [cvMat!] elemtype [integer!] row [integer!] col [integer!]
-            return: [integer!]][
+            return: [integer!] /local asize][
  	asize: size? (elemtype) 
 	CV_MAT_ELEM_PTR_FAST mat row col asize
 ]

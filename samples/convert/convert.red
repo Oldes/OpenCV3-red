@@ -21,16 +21,23 @@ Red [
 		Windows [picture: "c:\Users\palm\Pictures\baboon.jpg"]
 		Linux  [picture: "/Users/chart/Pictures/baboon.jpg"]
 	]
+	; glabla variables
 	delay: 1000
 	wName1: "Original 8-bit Image [ESC to Quit]"
 	wName2: "Color -> Grayscale Image"
 	wName3: "8-bit -> 32-bit Image" 
 	wName4: "32-bit -> 8-bit Image"
-	scale: 0.003921568627451 ; (1 / 255)  
-	
+	scale: 0.003921568627451 ; (1 / 255)
+	src: declare CvArr!
+	gray: declare CvArr!
+	dst: declare CvArr!
+	dst2: declare CvArr!
 ]
 
-loadImage: routine [] [
+tpicture: %/../../Pictures/baboon.jpg
+
+print [tpicture lf]
+loadImage: routine [/local tmp] [
 	print ["Please wait for..." newline]
 	tmp: cvLoadImage picture CV_LOAD_IMAGE_ANYCOLOR ; to get structure values
 	gray: as byte-ptr! cvCreateImage tmp/width tmp/height IPL_DEPTH_8U 1; for grayscale
@@ -72,21 +79,10 @@ convertImage: routine [][
 
 freeOpenCV: routine [] [
 	cvDestroyAllWindows
-	&src: declare dbptr! ; we need a double pointer
-	&src/ptr: src
-	cvReleaseImage &src
-	
-	&gray: declare dbptr! ; we need a double pointer
-	&gray/ptr: gray
-	cvReleaseImage &gray
-	
-	&dst: declare dbptr! ; we need a double pointer
-	&dst/ptr: dst
-	cvReleaseImage &dst
-	
-	&dst2: declare dbptr! ; we need a double pointer
-	&dst2/ptr: dst2
-	cvReleaseImage &dst2
+	releaseImage src
+	releaseImage gray
+	releaseImage dst
+	releaseImage dst2
 ]
 
 ;***************** Main Program ***********************

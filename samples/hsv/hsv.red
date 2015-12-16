@@ -24,10 +24,13 @@ Red [
 	delay: 1000
 	wName1: "Original Image"
 	wName2: "HSV "
-	wName3: "Extracted Mask" 
+	wName3: "Extracted Mask"
+	src: declare CvArr!
+	hsv: declare CvArr!
+	mask: declare CvArr!
 ]
 
-loadImage: routine [] [
+loadImage: routine [/local v] [
 	tmp: cvLoadImage picture CV_LOAD_IMAGE_ANYCOLOR ; to get structure values
 	src: as byte-ptr! tmp
 	; creates HSV image

@@ -1181,7 +1181,7 @@ cvEllipseBox: func [img [CvArr!] box [CvBox2D!] color [CvScalar!]thickness [inte
   cvEllipse img x y axes/width  axes/height (0.0 + box/angle) 0.0 360.0 color/v2 color/v1 color/v0 color/v3 thickness line_type shift
 ]
 
-cvFont: func [scale [float!] thickness [integer!] return: [CvFont!]]
+cvFont: func [scale [float!] thickness [integer!] return: [CvFont!] /local font]
 [
     font: declare CvFont!
     cvInitFont font CV_FONT_HERSHEY_PLAIN scale scale 0.0 thickness CV_AA

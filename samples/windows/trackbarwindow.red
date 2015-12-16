@@ -13,6 +13,9 @@ Red [
 	#include %../../libs/core/core.reds             ; OpenCV core functions
 	#include %../../libs/highgui/highgui.reds       ; highgui functions
 	
+	; global variables
+	p: declare pointer! [integer!]  ; for trackbar position
+	windowsName: "OpenCV Window [Any Key to close Window]"
 	
 	; function pointer called by TrackBar callback
 	
@@ -24,9 +27,7 @@ Red [
 
 ; red routines are interface between red/system and red code. Great!
 makeWindow: routine [] [
-	windowsName: "OpenCV Window [Any Key to close Window]"
 	cvNamedWindow windowsName CV_WND_PROP_AUTOSIZE OR CV_WND_PROP_ASPECTRATIO
-	p: declare pointer! [integer!]  ; for trackbar position
 	; for trackbar events 
 	cvCreateTrackbar "Track" windowsName p 49 :trackEvent ; function as parameter
 	cvSetTrackBarPos "Track" windowsName 0

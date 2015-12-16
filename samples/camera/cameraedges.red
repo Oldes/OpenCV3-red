@@ -15,14 +15,25 @@ Red [
 	#include %../../libs/highgui/highgui.reds       ; highgui functions	
 	#include %../../libs/imgcodecs/imgcodecs.reds   ; basic image functions
 	#include %../../libs/videoio/videoio.reds       ; to play with camera
+	; global variables
+	capture: declare CvArr!
+	&capture: declare dbptr!
+	image: declare IplImage!
+	&image: declare dbptr! ; we need a double pointer
+	laplace: declare IplImage!
+	&laplace: declare dbptr! ;
+	neighbourhoodSize: 0
+	p: declare pointer! [integer!]
+	windowName: "Edge Detection: ESC for quit"
+	tbarname: "Edges"
 
 	; Code pointer associated to trackbar
 	trackEvent: func [[cdecl] pos [integer!] /local v param1] [ 
-        v: (pos // 2) ; param must be odd !!!
-        image: cvQueryFrame capture     ; get the frame
-        if v = 1  [either pos <= 7 [neighbourhoodSize: pos] [neighbourhoodSize: 7]] ; odd and <= 7
-        cvLaplace as byte-ptr! image as byte-ptr! laplace neighbourhoodSize
-       	cvShowImage windowName as byte-ptr! laplace   ; show frame   
+		v: (pos // 2) ; param must be odd !!!
+		image: cvQueryFrame capture     ; get the frame
+		if v = 1  [either pos <= 7 [neighbourhoodSize: pos] [neighbourhoodSize: 7]] ; odd and <= 7
+		cvLaplace as byte-ptr! image as byte-ptr! laplace neighbourhoodSize
+		cvShowImage windowName as byte-ptr! laplace   ; show frame   
 	]
 	; for image depth
 	depth: IPL_DEPTH_32F; for laplacian
@@ -33,12 +44,9 @@ Red [
 
 createCam: routine [device [integer!] return: [integer!]] [
 	cvStartWindowThread ; separate window thread
-	windowName: "Edge Detection: ESC for quit"
-	tbarname: "Edges"
 	neighbourhoodSize: 1
 	; for the trackbar  we need a pointer to get back value
 	p: declare pointer! [integer!]  ; for trackbar position
-	&capture: declare dbptr!
 	capture: cvCreateCameraCapture device
 	image: cvRetrieveFrame capture ; get the first image
 	; for threshold
@@ -72,14 +80,14 @@ freeOpenCV: routine [return: [integer!]] [
 ]
 
 
-	; main program
-	createCam 0 ; use first webcam
-	rep: 0
-	until [
-		rep: does [render] ; read and process images from camera until esc key is pressed
+;**************main program *********************************
+createCam 0 ; use first webcam
+rep: 0
+until [
+	rep: does [render] ; read and process images from camera until esc key is pressed
 	rep = escape
-	]
-	freeOpenCV ; free OpenCV pointers
+]
+freeOpenCV ; free OpenCV pointers
 
 
 

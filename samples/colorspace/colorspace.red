@@ -21,14 +21,17 @@ Red [
 		Windows [picture: "c:\Users\palm\Pictures\lena.tiff"]
 		Linux  [picture: "/Users/chart/Pictures/lena.tiff"]
 	]
+	; global variables
 	delay: 1000
 	wName1: "Original Image"
-    wName2: "Modified Image"
+	wName2: "Modified Image"
 	scale: 0.003921568627451 ; (1 / 255)
-	bit8: true ; 8 or 32-bit images 
+	bit8: true ; 8 or 32-bit images
+	src: declare CvArr!
+	dst: declare CvArr!
 ]
 
-loadImages: routine [] [
+loadImages: routine [/local tmp] [
 	print ["Playing with cvCvtColor" lf]
 	tmp: cvLoadImage picture CV_LOAD_IMAGE_ANYCOLOR ; to get structure values
 	src: as byte-ptr! cvCreateImage tmp/width tmp/height IPL_DEPTH_32F 3

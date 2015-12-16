@@ -17,13 +17,20 @@ Red [
 	#switch OS [
 		MacOSX  [picture: "/Users/fjouen/Pictures/baboon.jpg"]
 		Windows [picture: "c:\Users\palm\Pictures\baboon.jpg"]
+		Linux  [picture: "/Users/chart/Pictures/baboon.jpg"]
 	]
+	; global variables
+	img: declare CvArr!
+	s0: declare CvArr!
+	s1: declare CvArr!
+	s2: declare CvArr!
+	dst: declare CvArr!
 	delay: 1000
 	windowsName: "Original Image"
 	
 ]
 
-loadImage: routine [] [
+loadImage: routine [/local tmp] [
 	print ["Please wait for..." newline]
 	tmp: cvLoadImage picture CV_LOAD_IMAGE_ANYCOLOR ; to get structure values
 	; creates 3 images for RGB planes
@@ -176,25 +183,14 @@ processAll: routine [] [
 
 freeOpenCV: routine [] [
 	cvDestroyAllWindows
-	&img: declare dbptr! ; we need a double pointer
-	&img/ptr: img
-	cvReleaseImage &img
-	&dst: declare dbptr! ; we need a double pointer
-	&dst/ptr: dst
-	cvReleaseImage &dst
-	&s0: declare dbptr! ; we need a double pointer
-	&s0/ptr: s0
-	cvReleaseImage &s0
-	&s1: declare dbptr! ; we need a double pointer
-	&s1/ptr: s1
-	cvReleaseImage &s1
-	&s2: declare dbptr! ; we need a double pointer
-	&s2/ptr: s2
-	cvReleaseImage &s2
-	
+	releaseImage img
+	releaseImage dst
+	releaseImage s0
+	releaseImage s1
+	releaseImage s2
 ]
 
-
+;********************** MAIN PROGRAM **************************
 
 loadImage
 processAll

@@ -30,8 +30,8 @@ Red [
     thickness: 0
     ymin: 0
     image: declare IplImage!
-	image2: declare IplImage!
-	ii: 1.0
+    image2: declare IplImage!
+    ii: 1.0
 ]
 
 ; global red variables to be passed as parameters to routines
@@ -86,7 +86,7 @@ randomArray: does [
 
 randomFont: does [
 	; 0 to 7 see basic font types in cxcore.reds
-    tmpFont: first random [0 1 2 3 4 5 6 7]
+	tmpFont: first random [0 1 2 3 4 5 6 7]
 	vsf: first random [1 2 3 4 5 6]
 	hsf: first random [1 2 5]
 ]
@@ -146,9 +146,10 @@ drawSubstract: routine [
 	r  		[integer!]
 	g  		[integer!]
 	b  		[integer!]
+	/local allS
 	] [
-
-	cvSubS as byte-ptr! image2 cvScalarAll ii as byte-ptr! image null
+	allS: cvScalarAll ii
+	cvSubS as byte-ptr! image2 allS/v0 allS/v1 allS/v2 allS/v3 as byte-ptr! image null
 	color: tocvRGB int-to-float r int-to-float g int-to-float b 0.0
 	cvPutText as byte-ptr! image "www.red-lang.org" pt1/x pt1/y font color/v0 color/v1 color/v2 color/v3
 	cvShowImage as c-string! string/rs-head name as byte-ptr! image
@@ -241,9 +242,9 @@ drawEllipses: routine [
 	color: tocvRGB int-to-float r int-to-float g int-to-float b 0.0
 	; until a new float! implementation by red 0.6.0
 	; float as conssdred as pointers!
-	anglea: angle/value
-	starta:  angle/value + 100.0 
-	enda: angle/value + 200.0
+	anglea: angle
+	starta:  angle + 100.0 
+	enda: angle + 200.0
 	cvEllipse as byte-ptr! image p1/x p1/y p2/x p2/y anglea starta enda color/v0 color/v1 color/v2 color/v3 t CV_AA 0
 	cvShowImage as c-string! string/rs-head name as byte-ptr! image
 	cvWaitKey 1
@@ -262,7 +263,7 @@ drawPolygons: routine [
 	g  		[integer!]
 	b  		[integer!]
 	t  		[integer!]
-	/local mem1 mem2 parray ppoints contours isClosed
+	/local mem1 mem2 parray ppoints dppoints contours isClosed
 	] [
 	; Array of polyline vertex counters [3][3]
 	mem1: allocate 2 * size? integer!
@@ -336,12 +337,8 @@ drawConvexPoly: routine [
 
 freeOpenCV: routine [] [
 	cvDestroyAllWindows
-	&image: declare dbptr! ; we need a double pointer
-	&image/ptr: as byte-ptr! image
-	cvReleaseImage &image
-	&image2: declare dbptr! ; we need a double pointer
-	&image2/ptr: as byte-ptr! image2
-	cvReleaseImage &image2
+	releaseImage as byte-ptr! image
+	releaseImage as byte-ptr! image2
 ]
 
 

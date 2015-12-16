@@ -21,8 +21,8 @@ Red [
 		Windows [image: "c:\Users\palm\Pictures\baboon.jpg"]
 	]
 	
-	src: declare IplImage!
-	dst: declare IplImage!
+	src: declare CvArr!
+	dst: declare CvArr!
 	srcWnd: "Use cvTrackbar: ESC to close"
 	dstWnd: "Gaussian Blur"
 	tBar: "Filter"
@@ -31,15 +31,16 @@ Red [
         ; function pointer called by TrackBar callback
 	trackEvent: func [[cdecl] pos [integer!] /local v param1][
 		v: (pos // 2) ; param1 must be odd !!!
-		if v = 1  [param1: pos cvSmooth as byte-ptr! src  as byte-ptr! dst CV_GAUSSIAN param1 3 0.0 0.0 ]
-		cvShowImage dstWnd as byte-ptr! dst
+		if v = 1  [param1: pos cvSmooth src dst CV_GAUSSIAN param1 3 0.0 0.0 ]
+		cvShowImage dstWnd dst
 	] 
 ]
 
-gaussian: routine [] [
-	src: cvLoadImage image CV_LOAD_IMAGE_ANYCOLOR
-	dst: cvCloneImage src
-	
+gaussian: routine [/local tmp] [
+	tmp: cvLoadImage image CV_LOAD_IMAGE_ANYCOLOR
+	dst: as byte-ptr! cvCloneImage tmp
+	src: as byte-ptr! tmp
+	tmp: null
 	;create windows for output images
 	cvNamedWindow srcWnd CV_WINDOW_AUTOSIZE
 	cvNamedWindow dstWnd CV_WINDOW_AUTOSIZE
@@ -48,21 +49,16 @@ gaussian: routine [] [
 	cvMoveWindow srcWnd 30 100
 	cvMoveWindow dstWnd 630 100
 	;show images
-	cvShowImage srcWnd as byte-ptr! src
-	cvShowImage dstWnd as byte-ptr! dst
-	
+	cvShowImage srcWnd src
+	cvShowImage dstWnd dst
 	cvWaitKey 0 ; until a key is pressed
 ]
 
 ; free memory used by OpenCV
 freeOpenCV: routine [] [
 	cvDestroyAllWindows
-	&src: declare dbptr! ; we need a double pointer
-	&src/ptr: as byte-ptr! src
-	cvReleaseImage &src
-	&dst: declare dbptr! ; we need a double pointer
-	&dst/ptr: as byte-ptr! dst
-	cvReleaseImage &dst
+	releaseImage src
+	releaseImage dst
 ]
 
 ;*************************** Main Program*********************

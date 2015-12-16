@@ -14,13 +14,16 @@ Red [
 	#include %../../libs/core/core.reds             ; OpenCV core functions
 	#include %../../libs/highgui/highgui.reds       ; highgui functions
 	#include %../../libs/videoio/videoio.reds       ; to play with camera
+	capture: declare CvArr!
+	&capture: declare dbptr!
+	image: declare IplImage!
+	&image: declare dbptr! ; we need a double pointer
 ]
 
 ; create red routines calling Red/System code
 
 ; use webcam
 createCam: routine [device [integer!] return: [integer!]] [
-	&capture: declare dbptr!
 	capture: cvCreateCameraCapture device
 	either (capture <> null) [
 		cvSetCaptureProperty capture CV_CAP_PROP_FRAME_WIDTH 640.00
@@ -33,7 +36,7 @@ createCam: routine [device [integer!] return: [integer!]] [
 
 ;play movies
 createMovie: routine [device [string!] return: [integer!]] [
-  &capture: declare dbptr!
+  
   cvNamedWindow "Playing with Movies with Red" CV_WND_PROP_AUTOSIZE OR CV_WND_PROP_ASPECTRATIO ;1
   capture: cvCreateFileCapture as c-string! string/rs-head device
   either (capture <> null) [
@@ -52,12 +55,11 @@ render: routine [return: [integer!]] [
 ; free memory used by OpenCV
 freeOpenCV: routine [return: [integer!]] [
 	cvDestroyAllWindows
-	&image: declare dbptr! ; we need a double pointer
 	&image/ptr: as byte-ptr! image
 	cvReleaseImage &image
 	&capture/ptr: null
 	cvReleaseCapture &capture
-	return 1
+	return 0
 ]
 
 

@@ -9,6 +9,11 @@
 
 ###You must use 32-bit version of dynamically linked libraries. 
 
+### NEW : December 16! 
+Libs and samples are now compatible with red master branch! Better support for float! and block! types.
+
+Linux support also added!
+
 ## Warning
 The code is still under development and unstable. This software is provided 'as-is', without any express or implied warranty.
 
@@ -23,8 +28,7 @@ Several scripts which demonstrate how to use OpenCV with Red. Please adapt paths
 
 
 These scripts allow to play with camera and images.
-All scrpits were compiled with Red 0.5.4 compiler and are fully functional under OSX and Windows. Linux will be added ASAP.
-
+All scrpits are now compiled with Red Master Branch 0.5.4 compiler and are fully functional under OSX and Windows. Tests required for Linux.
 Windows 10 users: there is a unresolved problem with webcams.Cams are recognized and activated but we can't get images. To be tested!
 
 

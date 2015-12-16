@@ -19,6 +19,11 @@ Red [
 		MacOSX  [image: "/Users/fjouen/Pictures/lena.tiff"]
 		Windows [image: "c:\Users\palm\Pictures\lena.tiff"]
 	]
+	; global variables
+	windowsName: "OpenCV Window [Any Key to close Window]"
+	p: declare pointer! [integer!]  ; for trackbar position
+	img: declare CvArr!
+	
 	; code pointer for tracker
 	trackEvent: func [[cdecl] pos [integer!]][
 		cvGetTrackbarPos "Track" windowsName
@@ -40,17 +45,15 @@ Red [
 
 
 makeWindow: routine [] [
-	windowsName: "OpenCV Window [Any Key to close Window]"
 	cvNamedWindow windowsName CV_WND_PROP_AUTOSIZE OR CV_WND_PROP_ASPECTRATIO
-	p: declare pointer! [integer!]  ; for trackbar position
 	; for trackbar events 
 	cvCreateTrackbar "Track" windowsName p 49 :trackEvent ; function as parameter
 	cvSetTrackBarPos "Track" windowsName 0
 	; set callback for mouse events
 	cvSetMouseCallBack windowsName :mouseEvent null
 	;load and show color image
-	img: cvLoadImage image CV_LOAD_IMAGE_ANYCOLOR
-	cvShowImage windowsName as byte-ptr! img
+	img: as byte-ptr! cvLoadImage image CV_LOAD_IMAGE_ANYCOLOR
+	cvShowImage windowsName img
 	cvMoveWindow windowsName 200 200
 	cvWaitKey 0
 ]
@@ -58,13 +61,11 @@ makeWindow: routine [] [
 ; free memory used by OpenCV
 freeOpenCV: routine [] [
 	cvDestroyAllWindows
-	&image: declare dbptr! ; we need a double pointer
-	&image/ptr: as byte-ptr! img
-	cvReleaseImage &image
+	releaseImage img
 ]
 
 
-; just red code :)
+; *********** Main Progrem ************
 makeWindow
 freeOpenCV
 quit
